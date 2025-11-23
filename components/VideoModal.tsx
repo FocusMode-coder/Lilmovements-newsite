@@ -43,19 +43,20 @@ export default function VideoModal({ isOpen, onClose, src, title }: VideoModalPr
 
   return (
     <div 
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
       onClick={handleBackdropClick}
       role="dialog"
       aria-modal="true"
       aria-label={title || "Video modal"}
     >
-      <div className="relative w-full max-w-4xl mx-4 rounded-3xl bg-black/90 overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-300">
+      {/* Video Container - Optimized for 9:16 vertical videos */}
+      <div className="relative w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl mx-4 rounded-2xl bg-black overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-300">
         
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-white/10 backdrop-blur-md border border-white/20 
-                     flex items-center justify-center text-white hover:bg-white/20 
+          className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-black/50 backdrop-blur-md border border-white/20 
+                     flex items-center justify-center text-white hover:bg-black/70 
                      transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/50"
           aria-label="Close video"
         >
@@ -75,19 +76,28 @@ export default function VideoModal({ isOpen, onClose, src, title }: VideoModalPr
           </svg>
         </button>
 
-        {/* Video Element */}
-        <video
-          controls
-          autoPlay
-          playsInline
-          className="w-full h-full max-h-[70vh] object-cover"
-          onError={(e) => {
-            console.error('Video failed to load:', src);
-          }}
-        >
-          <source src={src} type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
+        {/* Video Element - Optimized for vertical 9:16 videos without black bars */}
+        <div className="relative w-full flex items-center justify-center bg-black rounded-2xl">
+          <video
+            controls
+            autoPlay
+            playsInline
+            muted
+            className="w-full max-w-full max-h-[85vh] object-contain rounded-2xl"
+            poster={`${src}#t=0.5`}
+            onError={(e) => {
+              console.error('Video failed to load:', src);
+            }}
+            style={{
+              aspectRatio: '9/16',
+              maxHeight: '85vh',
+              maxWidth: '100%'
+            }}
+          >
+            <source src={src} type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        </div>
 
         {/* Optional Title */}
         {title && (

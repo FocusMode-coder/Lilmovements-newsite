@@ -48,15 +48,6 @@ export default function DashboardPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
 
-  // Social state
-  const [suggestedMembers, setSuggestedMembers] = useState<SuggestedMember[]>([]);
-  const [contactRequests, setContactRequests] = useState<ContactRequestData[]>([]);
-  const [conversations, setConversations] = useState<ConversationData[]>([]);
-  const [activeConversation, setActiveConversation] = useState<string | null>(null);
-  const [messages, setMessages] = useState<MessageData[]>([]);
-  const [newMessage, setNewMessage] = useState('');
-  const [loading, setLoading] = useState(true);
-
   // Redirect unauthenticated users to join page
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -81,15 +72,38 @@ export default function DashboardPage() {
     return null;
   }
 
-  // Fetch social data
+  return <AuthenticatedDashboard session={session} />;
+}
+
+function AuthenticatedDashboard({ session }: { session: any }) {
+  const router = useRouter();
+
+  // Social state
+  const [suggestedMembers, setSuggestedMembers] = useState<SuggestedMember[]>([]);
+  const [contactRequests, setContactRequests] = useState<ContactRequestData[]>([]);
+  const [conversations, setConversations] = useState<ConversationData[]>([]);
+  const [activeConversation, setActiveConversation] = useState<string | null>(null);
+  const [messages, setMessages] = useState<MessageData[]>([]);
+  const [newMessage, setNewMessage] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [userProfile, setUserProfile] = useState<any>(null);
+
+  // Fetch social data and user profile
   useEffect(() => {
     if (session?.user?.id) {
-      fetchSocialData();
+      fetchUserData();
     }
   }, [session?.user?.id]);
 
-  const fetchSocialData = async () => {
+  const fetchUserData = async () => {
     try {
+      // Fetch user profile with onboarding data
+      const profileRes = await fetch('/api/user/profile');
+      if (profileRes.ok) {
+        const profile = await profileRes.json();
+        setUserProfile(profile);
+      }
+
       const [membersRes, requestsRes, conversationsRes] = await Promise.all([
         fetch('/api/social/suggested-members'),
         fetch('/api/social/contact-requests'),
@@ -106,7 +120,7 @@ export default function DashboardPage() {
         setConversations(await conversationsRes.json());
       }
     } catch (error) {
-      console.error('Failed to fetch social data:', error);
+      console.error('Failed to fetch user data:', error);
     } finally {
       setLoading(false);
     }
@@ -142,7 +156,7 @@ export default function DashboardPage() {
         setContactRequests(prev => prev.filter(req => req.id !== requestId));
         // Refresh conversations if accepted
         if (action === 'accept') {
-          fetchSocialData();
+          fetchUserData();
         }
       }
     } catch (error) {
@@ -187,6 +201,96 @@ export default function DashboardPage() {
     }
   };
 
+  // Personalize classes based on user interests
+  const getPersonalizedClasses = () => {
+    const userInterests = userProfile?.classInterests || [];
+    const userGoals = userProfile?.goals || [];
+    const experienceLevel = userProfile?.experienceLevel || 'Complete Beginner';
+    
+    const allClasses = [
+      {
+        title: "Morning Flow",
+        duration: "25 min",
+        description: "Gentle awakening movements to start your day with intention and energy.",
+        badge: { text: "25 min", color: "bg-green-100 text-green-800" },
+        tags: ["Contemporary Flow", "Mindfulness & Mental Health", "Gentle Movement"],
+        level: ["Complete Beginner", "Some Experience"]
+      },
+      {
+        title: "Strength & Flow", 
+        duration: "Dynamic",
+        description: "Build functional strength while honoring your body's natural wisdom.",
+        badge: { text: "Dynamic", color: "bg-orange-100 text-orange-800" },
+        tags: ["Strength Training", "Contemporary Flow", "Build Strength"],
+        level: ["Some Experience", "Intermediate", "Advanced"]
+      },
+      {
+        title: "Evening Unwind",
+        duration: "Gentle", 
+        description: "Release the day's tension and prepare your body for restful sleep.",
+        badge: { text: "Gentle", color: "bg-blue-100 text-blue-800" },
+        tags: ["Yoga & Mindfulness", "Stress Reduction", "Better Sleep"],
+        level: ["Complete Beginner", "Some Experience", "Intermediate"]
+      },
+      {
+        title: "Dance Expression",
+        duration: "Creative", 
+        description: "Express yourself through free-flowing dance and creative movement.",
+        badge: { text: "Creative", color: "bg-purple-100 text-purple-800" },
+        tags: ["Dance Movement", "Dance & Expression", "Contemporary Flow"],
+        level: ["Some Experience", "Intermediate", "Advanced"]
+      },
+      {
+        title: "Mindful Meditation",
+        duration: "20 min", 
+        description: "Center yourself with guided breathwork and meditation practices.",
+        badge: { text: "20 min", color: "bg-blue-100 text-blue-800" },
+        tags: ["Meditation", "Breathwork", "Mindfulness & Mental Health"],
+        level: ["Complete Beginner", "Some Experience", "Intermediate", "Advanced"]
+      }
+    ];
+
+    // Filter and sort classes based on user preferences
+    return allClasses
+      .filter(cls => {
+        const hasMatchingInterest = cls.tags.some(tag => userInterests.includes(tag)) || userInterests.length === 0;
+        const hasMatchingGoal = cls.tags.some(tag => userGoals.includes(tag)) || userGoals.length === 0;
+        const hasMatchingLevel = cls.level.includes(experienceLevel);
+        
+        return hasMatchingLevel && (hasMatchingInterest || hasMatchingGoal);
+      })
+      .slice(0, 3); // Show top 3 personalized classes
+  };
+
+  const getPersonalizedWelcome = () => {
+    const goals = userProfile?.goals || [];
+    const practiceTime = userProfile?.practiceTime || '';
+    const firstName = session.user?.name?.split(' ')[0] || 'Beautiful Soul';
+    
+    let welcomeMessage = `Welcome back, ${firstName}!`;
+    
+    if (practiceTime.includes('Morning')) {
+      welcomeMessage = `Good morning, ${firstName}!`;
+    } else if (practiceTime.includes('Evening')) {
+      welcomeMessage = `Good evening, ${firstName}!`;
+    }
+    
+    let subtitle = "Ready to move with intention today?";
+    
+    if (goals.includes('Stress Reduction')) {
+      subtitle = "Ready to release some tension and find your center?";
+    } else if (goals.includes('Build Strength')) {
+      subtitle = "Ready to build strength and feel empowered?";
+    } else if (goals.includes('Increase Flexibility')) {
+      subtitle = "Ready to flow and increase your flexibility?";
+    }
+    
+    return { welcomeMessage, subtitle };
+  };
+
+  const personalizedClasses = getPersonalizedClasses();
+  const { welcomeMessage, subtitle } = getPersonalizedWelcome();
+
   const handleSignOut = () => {
     signOut({ callbackUrl: '/' });
   };
@@ -212,94 +316,107 @@ export default function DashboardPage() {
       {/* Foreground Content */}
       <div className="relative z-20 max-w-5xl mx-auto px-4 py-10 space-y-8">
         
-        {/* TOP HERO CARD */}
+        {/* TOP HERO CARD - Personalized */}
         <div className="rounded-3xl bg-white/70 backdrop-blur-md border border-white/60 shadow-xl p-6 md:p-8 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-          {/* Left Side - Welcome Text */}
+          {/* Left Side - Personalized Welcome */}
           <div className="flex-1">
             <h1 className="text-3xl md:text-4xl font-semibold text-neutral-900 mb-2">
-              Welcome back, {session.user?.name || 'Beautiful Soul'}!
+              {welcomeMessage}
             </h1>
-            <p className="text-lg text-neutral-600">
-              Free Trial • Ready to move with intention today?
+            <p className="text-lg text-neutral-600 mb-2">
+              {subtitle}
             </p>
+            
+            {/* Show personalization based on user data */}
+            {userProfile && (
+              <div className="flex flex-wrap gap-2 mt-3">
+                {userProfile.experienceLevel && (
+                  <span className="px-3 py-1 text-xs bg-gray-100 text-gray-700 rounded-full">
+                    {userProfile.experienceLevel}
+                  </span>
+                )}
+                {userProfile.sessionDuration && (
+                  <span className="px-3 py-1 text-xs bg-blue-100 text-blue-700 rounded-full">
+                    Prefers {userProfile.sessionDuration}
+                  </span>
+                )}
+                {userProfile.practiceTime && (
+                  <span className="px-3 py-1 text-xs bg-green-100 text-green-700 rounded-full">
+                    {userProfile.practiceTime}
+                  </span>
+                )}
+              </div>
+            )}
           </div>
           
           {/* Right Side - Action Buttons */}
           <div className="flex flex-col gap-3 md:min-w-[200px]">
-            <GlassButton
-              label="Start Today's Practice"
-              onClick={() => {}}
-              variant="primary"
-              className="w-full hover:scale-105 transition-transform duration-200"
-            />
-            <GlassButton
-              label="Explore Classes"
-              onClick={() => {}}
-              variant="secondary"
-              className="w-full hover:scale-105 transition-transform duration-200"
-            />
+            <button className="bg-white/90 backdrop-blur-md border border-white/70 text-gray-900 px-6 py-3 rounded-lg font-semibold hover:bg-white transition-all duration-200 transform hover:scale-105 shadow-lg w-full">
+              Start Today's Practice
+            </button>
+            <button className="bg-gray-900 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-800 transition-all duration-200 transform hover:scale-105 shadow-lg w-full">
+              Explore All Classes  
+            </button>
           </div>
         </div>
 
-        {/* CLASSES FEED SECTION */}
+        {/* PERSONALIZED CLASSES SECTION */}
         <div className="space-y-6">
-          <h2 className="text-2xl font-semibold text-white drop-shadow-lg">
-            This Week's Sessions
-          </h2>
+          <div className="flex items-center justify-between">
+            <h2 className="text-2xl font-semibold text-white drop-shadow-lg">
+              Recommended for You
+            </h2>
+            {userProfile?.goals && userProfile.goals.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {JSON.parse(userProfile.goals).slice(0, 2).map((goal: string) => (
+                  <span key={goal} className="px-3 py-1 text-xs bg-white/20 text-white rounded-full backdrop-blur-md">
+                    {goal}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* Class Card 1 */}
-            <div className="rounded-2xl bg-white/65 backdrop-blur-md border border-white/50 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-200 p-6">
-              <div className="flex justify-between items-start mb-3">
-                <h3 className="text-lg font-semibold text-neutral-900">Morning Flow</h3>
-                <span className="px-3 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">
-                  25 min
-                </span>
+            {personalizedClasses.map((classItem) => (
+              <div key={classItem.title} className="rounded-2xl bg-white/65 backdrop-blur-md border border-white/50 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-200 p-6">
+                <div className="flex justify-between items-start mb-3">
+                  <h3 className="text-lg font-semibold text-neutral-900">{classItem.title}</h3>
+                  <span className={`px-3 py-1 text-xs font-medium rounded-full ${classItem.badge.color}`}>
+                    {classItem.badge.text}
+                  </span>
+                </div>
+                <p className="text-neutral-600 text-sm mb-4">
+                  {classItem.description}
+                </p>
+                
+                {/* Show why this class was recommended */}
+                <div className="mb-4">
+                  <p className="text-xs text-gray-500 mb-2">Perfect for:</p>
+                  <div className="flex flex-wrap gap-1">
+                    {classItem.tags.slice(0, 2).map((tag) => (
+                      <span key={tag} className="px-2 py-1 text-xs bg-gray-100 text-gray-600 rounded">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                
+                <button className="bg-white/90 backdrop-blur-md border border-white/70 text-gray-900 px-4 py-2 rounded-lg font-medium hover:bg-white transition-all duration-200 w-full text-sm">
+                  Start Class
+                </button>
               </div>
-              <p className="text-neutral-600 text-sm mb-4">
-                Gentle awakening movements to start your day with intention and energy.
-              </p>
-              <GlassButton
-                label="Play"
-                variant="secondary"
-                className="w-full text-sm"
-              />
-            </div>
-
-            <div className="rounded-2xl bg-white/65 backdrop-blur-md border border-white/50 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-200 p-6">
-              <div className="flex justify-between items-start mb-3">
-                <h3 className="text-lg font-semibold text-neutral-900">Strength & Flow</h3>
-                <span className="px-3 py-1 text-xs font-medium bg-orange-100 text-orange-800 rounded-full">
-                  Dynamic
-                </span>
-              </div>
-              <p className="text-neutral-600 text-sm mb-4">
-                Build functional strength while honoring your body's natural wisdom.
-              </p>
-              <GlassButton
-                label="Play"
-                variant="secondary"
-                className="w-full text-sm"
-              />
-            </div>
-
-            <div className="rounded-2xl bg-white/65 backdrop-blur-md border border-white/50 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-200 p-6">
-              <div className="flex justify-between items-start mb-3">
-                <h3 className="text-lg font-semibold text-neutral-900">Evening Unwind</h3>
-                <span className="px-3 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
-                  Gentle
-                </span>
-              </div>
-              <p className="text-neutral-600 text-sm mb-4">
-                Release the day's tension and prepare your body for restful sleep.
-              </p>
-              <GlassButton
-                label="Play"
-                variant="secondary"
-                className="w-full text-sm"
-              />
-            </div>
+            ))}
           </div>
+          
+          {personalizedClasses.length === 0 && (
+            <div className="text-center py-8">
+              <p className="text-white/80 mb-4">Complete your profile to get personalized recommendations!</p>
+              <button className="bg-white/20 text-white px-6 py-3 rounded-lg font-medium hover:bg-white/30 transition-all duration-200 backdrop-blur-md">
+                Update Preferences
+              </button>
+            </div>
+          )}
         </div>
 
         {/* COMMUNITY SECTION */}

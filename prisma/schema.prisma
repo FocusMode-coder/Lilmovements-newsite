@@ -31,7 +31,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -40,6 +40,20 @@ enum ContactRequestStatus {
   PENDING
   ACCEPTED
   REJECTED
+}
+
+enum MembershipTier {
+  FREE
+  FOUNDER
+  PREMIUM
+  ANNUAL
+}
+
+enum MembershipStatus {
+  ACTIVE
+  CANCELLED
+  PAST_DUE
+  TRIALING
 }
 
 model User {
@@ -51,9 +65,24 @@ model User {
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
   
-  // Membership fields for future use
-  membershipPlan   String?   // e.g. "free", "founder", "premium"
+  // Password reset fields
+  resetToken       String?
+  resetTokenExpiry DateTime?
+  
+  // Onboarding data
+  birthDate        DateTime?
+  goals            String?   // JSON string of selected goals
+  classInterests   String?   // JSON string of selected class interests  
+  experienceLevel  String?
+  practiceTime     String?
+  sessionDuration  String?
+  
+  // Membership fields
+  membershipTier   MembershipTier   @default(FREE)
+  membershipStatus MembershipStatus @default(TRIALING)
   stripeCustomerId String?
+  subscriptionId   String?
+  trialEndsAt      DateTime?
   
   // NextAuth required fields
   accounts         Account[]
@@ -110,10 +139,9 @@ model ContactRequest {
   toUserId   String
   status     ContactRequestStatus @default(PENDING)
   createdAt  DateTime             @default(now())
-  updatedAt  DateTime             @updatedAt
+  updatedAt  DateTime             @default(now())
 
   @@unique([fromUserId, toUserId])
-  @@index([toUserId, status])
 }
 
 model Conversation {

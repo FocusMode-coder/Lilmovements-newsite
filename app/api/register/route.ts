@@ -6,6 +6,12 @@ interface RegisterRequest {
   name: string;
   email: string;
   password: string;
+  birthDate?: string;
+  goals?: string[];
+  classInterests?: string[];
+  experienceLevel?: string;
+  practiceTime?: string;
+  sessionDuration?: string;
 }
 
 export async function POST(request: NextRequest) {
@@ -52,13 +58,28 @@ export async function POST(request: NextRequest) {
     // Hash password
     const passwordHash = await bcrypt.hash(body.password, 12);
 
-    // Create user
+    // Calculate trial end date (7 days from now)
+    const trialEndsAt = new Date();
+    trialEndsAt.setDate(trialEndsAt.getDate() + 7);
+
+    // Parse birth date if provided
+    const birthDate = body.birthDate ? new Date(body.birthDate) : null;
+
+    // Create user with onboarding data
     const user = await prisma.user.create({
       data: {
         name: body.name,
         email: body.email,
         passwordHash,
-        membershipPlan: 'free', // Default to free plan
+        birthDate,
+        goals: body.goals ? JSON.stringify(body.goals) : null,
+        classInterests: body.classInterests ? JSON.stringify(body.classInterests) : null,
+        experienceLevel: body.experienceLevel || null,
+        practiceTime: body.practiceTime || null,
+        sessionDuration: body.sessionDuration || null,
+        membershipTier: 'FREE',
+        membershipStatus: 'TRIALING',
+        trialEndsAt,
       },
     });
 
@@ -70,6 +91,14 @@ export async function POST(request: NextRequest) {
           id: user.id,
           name: user.name,
           email: user.email,
+          goals: user.goals ? JSON.parse(user.goals) : [],
+          classInterests: user.classInterests ? JSON.parse(user.classInterests) : [],
+          experienceLevel: user.experienceLevel,
+          practiceTime: user.practiceTime,
+          sessionDuration: user.sessionDuration,
+          membershipTier: user.membershipTier,
+          membershipStatus: user.membershipStatus,
+          trialEndsAt: user.trialEndsAt,
         }
       },
       { status: 201 }
