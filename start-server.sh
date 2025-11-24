@@ -1,7 +1,6 @@
 #!/bin/bash
 
-# Optimized start script for Render - prevents timeouts
-echo "🚀 Starting Lily Movements website..."
+echo "🚀 Starting Lily Movements Website with Anti-Sleep System..."
 
 # Set production environment
 export NODE_ENV=production
@@ -23,6 +22,25 @@ prisma.\$connect().then(() => {
 });
 "
 
-# Start the Next.js server with optimized settings
-echo "🌟 Starting Next.js server..."
-exec npx next start -p ${PORT:-3000} --keepAliveTimeout 30000 --headersTimeout 35000
+# Make sure keep-alive script is executable
+chmod +x keep-alive.sh
+
+# Start the Next.js application
+echo "📱 Starting Next.js application..."
+npm start &
+APP_PID=$!
+
+# Wait a moment for the app to start
+sleep 10
+
+# Start the anti-sleep system in the background
+echo "🛡️ Starting Anti-Sleep System..."
+./keep-alive.sh &
+KEEPALIVE_PID=$!
+
+echo "✅ Both systems started successfully!"
+echo "📱 Next.js App PID: $APP_PID"
+echo "🛡️ Keep-Alive PID: $KEEPALIVE_PID"
+
+# Wait for the main application
+wait $APP_PID

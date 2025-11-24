@@ -47,7 +47,7 @@ export default function Home() {
     }
   };
 
-  // Enhanced Background video component using Lily's OPTIMIZED videos
+  // Enhanced Background video component using Lily's ORIGINAL videos (uploaded to GitHub)
   const BackgroundVideo = () => (
     <div className="absolute inset-0 z-0">
       {/* Beautiful animated gradient background as fallback */}
@@ -64,7 +64,7 @@ export default function Home() {
         </div>
       </div>
       
-      {/* Lily's OPTIMIZED background videos - 82% smaller, much faster loading! */}
+      {/* Lily's ORIGINAL background videos (that are actually uploaded to GitHub) */}
       <video
         autoPlay
         loop
@@ -89,10 +89,10 @@ export default function Home() {
           }
         }}
       >
-        <source src="/assets/optimized/LM-BACKNATURE-opt.mp4" type="video/mp4" />
+        <source src="/assets/LM-BACKNATURE.mp4" type="video/mp4" />
       </video>
       
-      {/* Fallback OPTIMIZED background video */}
+      {/* Fallback ORIGINAL background video */}
       <video
         autoPlay
         loop
@@ -112,7 +112,7 @@ export default function Home() {
           e.currentTarget.style.display = 'none';
         }}
       >
-        <source src="/assets/optimized/LM-BACKWHITE-opt.mp4" type="video/mp4" />
+        <source src="/assets/LM-BACKWHITE.mp4" type="video/mp4" />
       </video>
       
       {/* Gradient Overlay for Apple-style depth */}
@@ -159,17 +159,17 @@ export default function Home() {
               {
                 title: "Contemporary Flow",
                 description: "Fluid movements that connect mind, body, and spirit",
-                video: "/assets/optimized/Lily_dancing1-opt.mp4"
+                video: "/assets/Lily_dancing1.mp4"
               },
               {
                 title: "Mindful Movement", 
                 description: "Gentle practices focused on awareness and presence",
-                video: "/assets/optimized/Lily_dancing2-opt.mp4"
+                video: "/assets/Lily_dancing2.mp4"
               },
               {
                 title: "Expressive Dance",
                 description: "Freedom of expression through creative movement",
-                video: "/assets/optimized/LM_recap1-opt.mp4"
+                video: "/assets/LM_recap1.mp4"
               }
             ].map((classItem, index) => (
               <motion.div
@@ -381,12 +381,12 @@ export default function Home() {
           >
             {[
               {
-                video: "/assets/optimized/testimonio 1-opt.mp4",
+                video: "/assets/testimonio 1.mp4",
                 name: "Sarah M.",
                 title: "Student since 2022"
               },
               {
-                video: "/assets/optimized/testimonio 2-opt.mp4", 
+                video: "/assets/testimonio 2.mp4", 
                 name: "Maria L.",
                 title: "Student since 2021"
               }
@@ -496,7 +496,7 @@ export default function Home() {
               </motion.p>
               <motion.button
                 variants={staggerItem}
-                onClick={() => setVideoModal('/assets/optimized/howgotstarted-opt.mp4')}
+                onClick={() => setVideoModal('/assets/howgotstarted.mp4')}
                 className="bg-gray-900 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-800 transition-all duration-200 transform hover:scale-105 shadow-lg"
               >
                 Watch Her Story
