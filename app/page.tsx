@@ -47,6 +47,65 @@ export default function Home() {
     }
   };
 
+  // Video placeholder component for when videos fail to load
+  const VideoPlaceholder = ({ title, className = "" }: { title: string, className?: string }) => (
+    <div className={`bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center ${className}`}>
+      <div className="text-center text-white p-8">
+        <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 backdrop-blur-sm">
+          <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
+          </svg>
+        </div>
+        <h3 className="text-lg font-semibold mb-2">{title}</h3>
+        <p className="text-sm text-white/80">Preview Coming Soon</p>
+      </div>
+    </div>
+  );
+
+  // Background video component with fallback
+  const BackgroundVideo = () => (
+    <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900">
+        {/* Animated gradient background as fallback */}
+        <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 via-pink-600/20 to-blue-600/20 animate-pulse"></div>
+        
+        {/* Particle effect overlay */}
+        <div className="absolute inset-0 opacity-30">
+          <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-white/40 rounded-full animate-ping"></div>
+          <div className="absolute top-3/4 right-1/4 w-1 h-1 bg-white/60 rounded-full animate-ping animation-delay-1000"></div>
+          <div className="absolute bottom-1/4 left-1/2 w-1.5 h-1.5 bg-white/50 rounded-full animate-ping animation-delay-2000"></div>
+        </div>
+      </div>
+      
+      {/* Try to load video, but don't fail if it doesn't exist */}
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        preload="none"
+        className="absolute inset-0 w-full h-full object-cover opacity-0"
+        style={{
+          filter: 'brightness(0.3) saturate(0.8)',
+        }}
+        onLoadedData={(e) => {
+          e.currentTarget.style.opacity = '1';
+        }}
+        onError={(e) => {
+          e.currentTarget.style.display = 'none';
+        }}
+      >
+        <source src="/assets/Lily's Backgroundweb.33.mp4" type="video/mp4" />
+      </video>
+      
+      {/* Gradient Overlay for Apple-style depth */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/60"></div>
+      
+      {/* Subtle texture overlay */}
+      <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent"></div>
+    </div>
+  );
+
   return (
     <div className="bg-white">
       <Hero />
@@ -59,29 +118,7 @@ export default function Home() {
         variants={fadeInUp}
         className="relative py-20 px-6 overflow-hidden"
       >
-        {/* Dynamic Video Background */}
-        <div className="absolute inset-0 z-0">
-          <video
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="auto"
-            className="absolute inset-0 w-full h-full object-cover"
-            style={{
-              filter: 'brightness(0.3) saturate(0.8)',
-            }}
-          >
-            <source src="/assets/Lily's Backgroundweb.33.mp4" type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-          
-          {/* Gradient Overlay for Apple-style depth */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/60"></div>
-          
-          {/* Subtle texture overlay */}
-          <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent"></div>
-        </div>
+        <BackgroundVideo />
 
         <div className="relative z-10 max-w-6xl mx-auto">
           <motion.h2
@@ -131,7 +168,7 @@ export default function Home() {
                 className="rounded-2xl overflow-hidden hover:shadow-3xl transition-all duration-300 transform hover:scale-[1.02] group hover:bg-white/12"
               >
                 <div className="relative overflow-hidden">
-                  {/* Video container TRUE 9:16 vertical format - NO horizontal container */}
+                  {/* Video container with fallback */}
                   <div className="relative w-full overflow-hidden bg-gray-900/20 backdrop-blur-sm" style={{ aspectRatio: '9/16', maxHeight: '400px' }}>
                     <video
                       src={classItem.video}
@@ -139,10 +176,15 @@ export default function Home() {
                       muted
                       loop
                       playsInline
-                      autoPlay
-                      preload="auto"
+                      preload="none"
                       onLoadedData={(e) => {
                         e.currentTarget.currentTime = 0.1;
+                        e.currentTarget.style.opacity = '1';
+                      }}
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                        const placeholder = e.currentTarget.nextElementSibling as HTMLElement;
+                        if (placeholder) placeholder.style.display = 'flex';
                       }}
                       onMouseEnter={(e) => {
                         e.currentTarget.playbackRate = 1;
@@ -158,8 +200,15 @@ export default function Home() {
                         height: '100%',
                         aspectRatio: '9/16',
                         objectFit: 'cover',
-                        objectPosition: 'top' // Forzar mostrar la parte superior del video
+                        objectPosition: 'top',
+                        opacity: '0'
                       }}
+                    />
+                    
+                    {/* Fallback placeholder - shown when video fails to load */}
+                    <VideoPlaceholder 
+                      title={classItem.title}
+                      className="absolute inset-0 hidden"
                     />
                     
                     {/* Gradient overlay for better text readability */}
@@ -343,7 +392,7 @@ export default function Home() {
                 variants={staggerItem}
                 className="bg-gray-50 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-200 group"
               >
-                {/* Testimonial video with TRUE 9:16 format and controlled size */}
+                {/* Testimonial video with fallback */}
                 <div className="relative overflow-hidden bg-gray-900" style={{ aspectRatio: '9/16', maxHeight: '350px' }}>
                   <video
                     src={testimonial.video}
@@ -351,10 +400,15 @@ export default function Home() {
                     muted
                     loop
                     playsInline
-                    autoPlay
-                    preload="auto"
+                    preload="none"
                     onLoadedData={(e) => {
                       e.currentTarget.currentTime = 0.1;
+                      e.currentTarget.style.opacity = '1';
+                    }}
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                      const placeholder = e.currentTarget.nextElementSibling as HTMLElement;
+                      if (placeholder) placeholder.style.display = 'flex';
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.playbackRate = 1;
@@ -368,8 +422,15 @@ export default function Home() {
                       height: '100%',
                       aspectRatio: '9/16',
                       objectFit: 'cover',
-                      objectPosition: 'top' // Forzar mostrar la parte superior del video
+                      objectPosition: 'top',
+                      opacity: '0'
                     }}
+                  />
+                  
+                  {/* Fallback placeholder for testimonial */}
+                  <VideoPlaceholder 
+                    title={testimonial.name}
+                    className="absolute inset-0 hidden"
                   />
                   
                   {/* Play overlay */}
@@ -461,6 +522,10 @@ export default function Home() {
                 src="/assets/Lily_BIO_picture.png"
                 alt="Lily"
                 className="w-full rounded-2xl shadow-2xl"
+                onError={(e) => {
+                  // Fallback for missing image
+                  e.currentTarget.src = '/api/placeholder/600/800';
+                }}
               />
             </motion.div>
           </div>
