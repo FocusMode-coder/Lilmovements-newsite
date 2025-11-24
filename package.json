@@ -9,8 +9,14 @@
     "lint": "next lint",
     "migrate:deploy": "prisma migrate deploy",
     "migrate:dev": "prisma migrate dev",
+    "migrate:reset": "prisma migrate reset --force",
+    "migrate:resolve": "prisma migrate resolve --applied 20251123000000_init_postgresql",
     "db:generate": "prisma generate",
-    "postinstall": "prisma generate"
+    "db:push": "prisma db push",
+    "db:studio": "prisma studio",
+    "postinstall": "prisma generate",
+    "deploy": "npm run migrate:resolve && npm run migrate:deploy && npm run build",
+    "build:production": "prisma generate && prisma migrate deploy && next build"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.1",

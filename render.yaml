@@ -2,23 +2,34 @@ services:
   - type: web
     name: lil-movements-web
     env: node
-    buildCommand: npm install && npm run migrate:deploy && npm run build
+    region: oregon
+    plan: starter
+    buildCommand: npm ci && npx prisma generate && npx prisma migrate deploy && npm run build
     startCommand: npm start
+    healthCheckPath: /api/ping
     envVars:
       - key: NODE_ENV
         value: production
       - key: NEXTAUTH_SECRET
-        fromDatabase:
-          name: lil-movements-secrets
-          property: nextauth_secret
+        generateValue: true
       - key: NEXTAUTH_URL
         value: https://lil-movements-web.onrender.com
       - key: DATABASE_URL
         fromDatabase:
           name: lil-movements-db
           property: connectionString
+      - key: EMAIL_HOST
+        value: smtp.gmail.com
+      - key: EMAIL_PORT
+        value: 587
+      - key: EMAIL_USER
+        sync: false
+      - key: EMAIL_PASS
+        sync: false
 
 databases:
   - name: lil-movements-db
     databaseName: lilmovements
     user: lilmovements
+    region: oregon
+    plan: starter
