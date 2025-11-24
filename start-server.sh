@@ -27,7 +27,7 @@ chmod +x keep-alive.sh
 
 # Start the Next.js application
 echo "📱 Starting Next.js application..."
-npm start &
+npm run start:next &
 APP_PID=$!
 
 # Wait a moment for the app to start
