@@ -50,3 +50,13 @@ next-d.ts
 .DS_Store
 Thumbs.db
 
+# Large media files (to avoid Git LFS issues)
+*.mp3
+*.mp4
+*.mov
+*.avi
+*.wav
+*.flac
+public/assets/*.mp3
+public/assets/*.mp4
+
