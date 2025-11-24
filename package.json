@@ -11,13 +11,13 @@
     "migrate:dev": "prisma migrate dev",
     "migrate:reset": "prisma migrate reset --force",
     "migrate:resolve": "prisma migrate resolve --applied 20251123000000_init_postgresql",
-    "migrate:force-deploy": "npm run migrate:resolve && prisma migrate deploy",
+    "migrate:safe-deploy": "prisma migrate deploy",
     "db:generate": "prisma generate",
     "db:push": "prisma db push --accept-data-loss",
     "db:studio": "prisma studio",
     "postinstall": "prisma generate",
-    "deploy": "npm run migrate:force-deploy && npm run build",
-    "build:production": "prisma generate && npm run migrate:force-deploy && next build",
+    "deploy": "npm run migrate:safe-deploy && npm run build",
+    "build:production": "prisma generate && npm run migrate:safe-deploy && next build",
     "audit:fix": "npm audit fix --force"
   },
   "dependencies": {
