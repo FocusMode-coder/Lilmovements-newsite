@@ -47,72 +47,10 @@ export default function Home() {
     }
   };
 
-  // Video configuration with working sample videos or elegant placeholders
-  const videoConfig = {
-    background: {
-      // Using a sample video that should work, with fallback
-      src: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-      fallback: true
-    },
-    classes: [
-      {
-        title: "Contemporary Flow",
-        description: "Fluid movements that connect mind, body, and spirit",
-        // Using working sample videos for now
-        video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"
-      },
-      {
-        title: "Mindful Movement", 
-        description: "Gentle practices focused on awareness and presence",
-        video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
-      },
-      {
-        title: "Expressive Dance",
-        description: "Freedom of expression through creative movement",
-        video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4"
-      }
-    ],
-    testimonials: [
-      {
-        video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
-        name: "Sarah M.",
-        title: "Student since 2022"
-      },
-      {
-        video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
-        name: "Maria L.",
-        title: "Student since 2021"
-      }
-    ],
-    story: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4"
-  };
-
-  // Enhanced Video placeholder component
-  const VideoPlaceholder = ({ title, description, className = "" }: { title: string, description?: string, className?: string }) => (
-    <div className={`bg-gradient-to-br from-purple-900 via-gray-900 to-purple-900 flex items-center justify-center relative overflow-hidden ${className}`}>
-      {/* Animated background */}
-      <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 via-pink-600/20 to-blue-600/20 animate-pulse"></div>
-      
-      {/* Content */}
-      <div className="relative z-10 text-center text-white p-8">
-        <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 backdrop-blur-sm animate-pulse">
-          <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
-          </svg>
-        </div>
-        <h3 className="text-lg font-semibold mb-2">{title}</h3>
-        <p className="text-sm text-white/80">{description || "Coming Soon"}</p>
-        <div className="mt-4 text-xs text-white/60">
-          <p>Upload your videos to /public/assets/ to see them here</p>
-        </div>
-      </div>
-    </div>
-  );
-
-  // Enhanced Background video component with working fallback
+  // Enhanced Background video component using Lily's OPTIMIZED videos
   const BackgroundVideo = () => (
     <div className="absolute inset-0 z-0">
-      {/* Beautiful animated gradient background */}
+      {/* Beautiful animated gradient background as fallback */}
       <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-gray-900 to-purple-900">
         <div className="absolute inset-0 bg-gradient-to-r from-purple-600/30 via-pink-600/30 to-blue-600/30 animate-pulse"></div>
         
@@ -126,7 +64,35 @@ export default function Home() {
         </div>
       </div>
       
-      {/* Try to load background video with working URL */}
+      {/* Lily's OPTIMIZED background videos - 82% smaller, much faster loading! */}
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        preload="metadata"
+        className="absolute inset-0 w-full h-full object-cover opacity-0"
+        style={{
+          filter: 'brightness(0.3) saturate(0.8)',
+        }}
+        onLoadedData={(e) => {
+          e.currentTarget.style.opacity = '1';
+        }}
+        onError={(e) => {
+          console.log('Primary background video failed, trying fallback...');
+          e.currentTarget.style.display = 'none';
+          // Try the white background version
+          const fallbackVideo = e.currentTarget.nextElementSibling as HTMLVideoElement;
+          if (fallbackVideo) {
+            fallbackVideo.style.display = 'block';
+            fallbackVideo.load();
+          }
+        }}
+      >
+        <source src="/assets/optimized/LM-BACKNATURE-opt.mp4" type="video/mp4" />
+      </video>
+      
+      {/* Fallback OPTIMIZED background video */}
       <video
         autoPlay
         loop
@@ -136,20 +102,24 @@ export default function Home() {
         className="absolute inset-0 w-full h-full object-cover opacity-0"
         style={{
           filter: 'brightness(0.4) saturate(0.8)',
+          display: 'none'
         }}
         onLoadedData={(e) => {
-          e.currentTarget.style.opacity = '0.7';
+          e.currentTarget.style.opacity = '0.8';
         }}
         onError={(e) => {
-          console.log('Background video failed to load, using gradient fallback');
+          console.log('Fallback background video also failed, using gradient');
           e.currentTarget.style.display = 'none';
         }}
       >
-        <source src={videoConfig.background.src} type="video/mp4" />
+        <source src="/assets/optimized/LM-BACKWHITE-opt.mp4" type="video/mp4" />
       </video>
       
-      {/* Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black/70"></div>
+      {/* Gradient Overlay for Apple-style depth */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/60"></div>
+      
+      {/* Subtle texture overlay */}
+      <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent"></div>
     </div>
   );
 
@@ -157,7 +127,7 @@ export default function Home() {
     <div className="bg-white">
       <Hero />
 
-      {/* Classes Preview with Enhanced Background */}    
+      {/* Classes Preview with Lily's Background Videos */}    
       <motion.section
         initial="hidden" 
         whileInView="visible"
@@ -185,7 +155,23 @@ export default function Home() {
             viewport={{ once: true, amount: 0.1 }}
             className="grid md:grid-cols-3 gap-8"
           >
-            {videoConfig.classes.map((classItem, index) => (
+            {[
+              {
+                title: "Contemporary Flow",
+                description: "Fluid movements that connect mind, body, and spirit",
+                video: "/assets/optimized/Lily_dancing1-opt.mp4"
+              },
+              {
+                title: "Mindful Movement", 
+                description: "Gentle practices focused on awareness and presence",
+                video: "/assets/optimized/Lily_dancing2-opt.mp4"
+              },
+              {
+                title: "Expressive Dance",
+                description: "Freedom of expression through creative movement",
+                video: "/assets/optimized/LM_recap1-opt.mp4"
+              }
+            ].map((classItem, index) => (
               <motion.div
                 key={classItem.title}
                 variants={staggerItem}
@@ -199,50 +185,40 @@ export default function Home() {
                 className="rounded-2xl overflow-hidden hover:shadow-3xl transition-all duration-300 transform hover:scale-[1.02] group hover:bg-white/12"
               >
                 <div className="relative overflow-hidden">
-                  {/* Video container with working URLs */}
-                  <div className="relative w-full overflow-hidden bg-gray-900/20 backdrop-blur-sm" style={{ aspectRatio: '16/9', maxHeight: '300px' }}>
+                  {/* Video container TRUE 9:16 vertical format - optimized for Lily's videos */}
+                  <div className="relative w-full overflow-hidden bg-gray-900/20 backdrop-blur-sm" style={{ aspectRatio: '9/16', maxHeight: '400px' }}>
                     <video
                       src={classItem.video}
-                      className="w-full h-full object-cover cursor-pointer transition-all duration-500 group-hover:scale-105 opacity-0"
+                      className="w-full h-full object-cover cursor-pointer transition-all duration-500 group-hover:scale-105"
                       muted
                       loop
                       playsInline
                       preload="metadata"
                       onLoadedData={(e) => {
-                        e.currentTarget.currentTime = 1;
-                        e.currentTarget.style.opacity = '1';
-                      }}
-                      onError={(e) => {
-                        console.log(`Video ${classItem.title} failed to load`);
-                        e.currentTarget.style.display = 'none';
-                        const placeholder = e.currentTarget.nextElementSibling as HTMLElement;
-                        if (placeholder) placeholder.style.display = 'flex';
+                        e.currentTarget.currentTime = 0.1;
                       }}
                       onMouseEnter={(e) => {
+                        e.currentTarget.playbackRate = 1;
                         e.currentTarget.play();
                       }}
                       onMouseLeave={(e) => {
-                        e.currentTarget.pause();
+                        e.currentTarget.playbackRate = 0.3;
+                        e.currentTarget.play();
                       }}
                       onClick={() => setVideoModal(classItem.video)}
                       style={{
                         width: '100%',
                         height: '100%',
-                        objectFit: 'cover'
+                        aspectRatio: '9/16',
+                        objectFit: 'cover',
+                        objectPosition: 'top' // Show the top part of Lily's videos
                       }}
                     />
                     
-                    {/* Enhanced placeholder */}
-                    <VideoPlaceholder 
-                      title={classItem.title}
-                      description={classItem.description}
-                      className="absolute inset-0 hidden"
-                    />
-                    
-                    {/* Overlay elements */}
+                    {/* Gradient overlay for better text readability */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/30 group-hover:from-black/30 transition-all duration-300" />
                     
-                    {/* Play indicator */}
+                    {/* Play indicator that appears on hover */}
                     <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
                       <div 
                         style={{
@@ -259,7 +235,7 @@ export default function Home() {
                       </div>
                     </div>
                     
-                    {/* Preview badge */}
+                    {/* Sample badge with glass effect */}
                     <div 
                       style={{
                         background: 'rgba(0, 0, 0, 0.4)',
@@ -270,6 +246,19 @@ export default function Home() {
                       className="absolute top-3 left-3 text-white text-xs px-3 py-1.5 rounded-full font-medium"
                     >
                       Preview
+                    </div>
+                    
+                    {/* Duration indicator with glass effect */}
+                    <div 
+                      style={{
+                        background: 'rgba(0, 0, 0, 0.4)',
+                        backdropFilter: 'blur(10px)',
+                        WebkitBackdropFilter: 'blur(10px)',
+                        border: '1px solid rgba(255, 255, 255, 0.3)'
+                      }}
+                      className="absolute bottom-3 right-3 text-white text-xs px-2 py-1 rounded font-medium"
+                    >
+                      0:30
                     </div>
                   </div>
                 </div>
@@ -292,12 +281,13 @@ export default function Home() {
                     onClick={() => setVideoModal(classItem.video)}
                     className="text-white font-semibold hover:text-white/80 transition-colors duration-200 text-sm flex items-center space-x-2 group/button drop-shadow"
                   >
-                    <span>Watch Preview</span>
+                    <span>Watch Full Preview</span>
                     <svg className="w-4 h-4 transform group-hover/button:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                     </svg>
                   </button>
                   
+                  {/* Membership CTA with enhanced glass effect */}
                   <div className="mt-4 pt-4" style={{ borderTop: '1px solid rgba(255, 255, 255, 0.2)' }}>
                     <p className="text-xs text-white/60 mb-2 drop-shadow">
                       Full class available with membership
@@ -363,7 +353,7 @@ export default function Home() {
         </div>
       </motion.section>
 
-      {/* Testimonials with Working Videos */}
+      {/* Testimonials using Lily's testimonial videos */}
       <motion.section
         initial="hidden"
         whileInView="visible" 
@@ -389,44 +379,49 @@ export default function Home() {
             viewport={{ once: true, amount: 0.1 }}
             className="grid md:grid-cols-2 gap-8"
           >
-            {videoConfig.testimonials.map((testimonial, index) => (
+            {[
+              {
+                video: "/assets/optimized/testimonio 1-opt.mp4",
+                name: "Sarah M.",
+                title: "Student since 2022"
+              },
+              {
+                video: "/assets/optimized/testimonio 2-opt.mp4", 
+                name: "Maria L.",
+                title: "Student since 2021"
+              }
+            ].map((testimonial, index) => (
               <motion.div
                 key={testimonial.name}
                 variants={staggerItem}
                 className="bg-gray-50 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-200 group"
               >
-                {/* Testimonial video */}
-                <div className="relative overflow-hidden bg-gray-900" style={{ aspectRatio: '16/9', maxHeight: '300px' }}>
+                {/* Testimonial video with TRUE 9:16 format and controlled size */}
+                <div className="relative overflow-hidden bg-gray-900" style={{ aspectRatio: '9/16', maxHeight: '350px' }}>
                   <video
                     src={testimonial.video}
-                    className="w-full h-full object-cover cursor-pointer transition-all duration-300 group-hover:scale-105 opacity-0"
+                    className="w-full h-full object-cover cursor-pointer transition-all duration-300 group-hover:scale-105"
                     muted
                     loop
                     playsInline
                     preload="metadata"
                     onLoadedData={(e) => {
-                      e.currentTarget.currentTime = 1;
-                      e.currentTarget.style.opacity = '1';
+                      e.currentTarget.currentTime = 0.1;
                     }}
-                    onError={(e) => {
-                      e.currentTarget.style.display = 'none';
-                      const placeholder = e.currentTarget.nextElementSibling as HTMLElement;
-                      if (placeholder) placeholder.style.display = 'flex';
+                    onMouseEnter={(e) => {
+                      e.currentTarget.playbackRate = 1;
                     }}
-                    onMouseEnter={(e) => e.currentTarget.play()}
-                    onMouseLeave={(e) => e.currentTarget.pause()}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.playbackRate = 0.4;
+                    }}
                     onClick={() => setVideoModal(testimonial.video)}
                     style={{
                       width: '100%',
                       height: '100%',
-                      objectFit: 'cover'
+                      aspectRatio: '9/16',
+                      objectFit: 'cover',
+                      objectPosition: 'top' // Show the top part of testimonial videos
                     }}
-                  />
-                  
-                  <VideoPlaceholder 
-                    title={testimonial.name}
-                    description="Student Testimonial"
-                    className="absolute inset-0 hidden"
                   />
                   
                   {/* Play overlay */}
@@ -438,6 +433,7 @@ export default function Home() {
                     </div>
                   </div>
                   
+                  {/* Testimonial badge */}
                   <div className="absolute top-3 left-3 bg-black/70 backdrop-blur-sm text-white text-xs px-3 py-1.5 rounded-full font-medium border border-white/20">
                     Testimonial
                   </div>
@@ -462,7 +458,7 @@ export default function Home() {
         </div>
       </motion.section>
 
-      {/* Meet Lily Section */}
+      {/* Meet Lily Section - using her story video */}
       <motion.section
         initial="hidden"
         whileInView="visible"
@@ -500,7 +496,7 @@ export default function Home() {
               </motion.p>
               <motion.button
                 variants={staggerItem}
-                onClick={() => setVideoModal(videoConfig.story)}
+                onClick={() => setVideoModal('/assets/optimized/howgotstarted-opt.mp4')}
                 className="bg-gray-900 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-800 transition-all duration-200 transform hover:scale-105 shadow-lg"
               >
                 Watch Her Story
@@ -517,14 +513,6 @@ export default function Home() {
                 src="/assets/Lily_BIO_picture.png"
                 alt="Lily"
                 className="w-full rounded-2xl shadow-2xl"
-                onError={(e) => {
-                  const target = e.currentTarget;
-                  target.style.display = 'none';
-                  const placeholder = document.createElement('div');
-                  placeholder.className = 'w-full h-96 bg-gradient-to-br from-purple-200 to-pink-200 rounded-2xl shadow-2xl flex items-center justify-center';
-                  placeholder.innerHTML = '<div class="text-center text-gray-600"><div class="text-4xl mb-4">👩‍🎨</div><p>Lily\'s Photo</p><p class="text-sm">Upload to /public/assets/Lily_BIO_picture.png</p></div>';
-                  target.parentNode?.appendChild(placeholder);
-                }}
               />
             </motion.div>
           </div>
