@@ -14,8 +14,6 @@ export default function Footer() {
         <span className="hidden sm:inline">•</span>
         <Link href="/legal/health" className="hover:text-neutral-700 underline underline-offset-2">Health</Link>
         <span className="hidden sm:inline">•</span>
-        <Link href="/legal/membership" className="hover:text-neutral-700 underline underline-offset-2">Membership</Link>
-        <span className="hidden sm:inline">•</span>
         <Link href="/legal/dmca" className="hover:text-neutral-700 underline underline-offset-2">DMCA</Link>
       </div>
     </footer>

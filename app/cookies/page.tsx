@@ -31,9 +31,8 @@ export default function CookiePolicyPage() {
         <p>We use cookies from trusted partners including:</p>
         <ul className="list-disc pl-5 space-y-1">
           <li>Google Analytics for website analytics</li>
-          <li>Meta Pixel for Facebook advertising</li>
+          <li>Meta Pixel for Facebook/Instagram advertising</li>
           <li>TikTok Pixel for TikTok advertising</li>
-          <li>Stripe for payment processing</li>
         </ul>
       </section>
 
@@ -53,8 +52,8 @@ export default function CookiePolicyPage() {
         </p>
         <p>
           Questions about cookies? Contact{" "}
-          <a href="mailto:privacy@lilmovements.com" className="underline underline-offset-2">
-            privacy@lilmovements.com
+          <a href="mailto:info.lilmovements@gmail.com" className="underline underline-offset-2">
+            info.lilmovements@gmail.com
           </a>
         </p>
       </section>

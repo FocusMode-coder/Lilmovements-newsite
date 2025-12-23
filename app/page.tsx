@@ -1,563 +1,307 @@
 'use client';
 
-import Hero from '@/components/Hero';
-import { motion } from 'framer-motion';
-import { ContactForm } from '@/components/ContactForm';
-import VideoModal from '@/components/VideoModal';
 import { useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
+import FadeInSection from '@/components/FadeInSection';
 
 export default function Home() {
-  const [videoModal, setVideoModal] = useState<string | null>(null);
-
-  // Fast, subtle fade-in - content appears quickly
-  const fadeInUp = {
-    hidden: { opacity: 0, y: 10 },
-    visible: { 
-      opacity: 1, 
-      y: 0, 
-      transition: { 
-        duration: 0.3, 
-        ease: "easeOut" 
-      } 
-    }
-  };
-
-  // Quick staggered animations with minimal delay
-  const staggerContainer = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.05,
-        delayChildren: 0
-      }
-    }
-  };
-
-  const staggerItem = {
-    hidden: { opacity: 0, y: 10 },
-    visible: { 
-      opacity: 1, 
-      y: 0, 
-      transition: { 
-        duration: 0.3, 
-        ease: "easeOut" 
-      } 
-    }
-  };
-
-  // Enhanced Background video component using Lily's ORIGINAL videos (uploaded to GitHub)
-  const BackgroundVideo = () => (
-    <div className="absolute inset-0 z-0">
-      {/* Beautiful animated gradient background as fallback */}
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-gray-900 to-purple-900">
-        <div className="absolute inset-0 bg-gradient-to-r from-purple-600/30 via-pink-600/30 to-blue-600/30 animate-pulse"></div>
-        
-        {/* Particle effects */}
-        <div className="absolute inset-0 opacity-30">
-          <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-white/40 rounded-full animate-ping"></div>
-          <div className="absolute top-3/4 right-1/4 w-1 h-1 bg-white/60 rounded-full animate-ping animation-delay-1000"></div>
-          <div className="absolute bottom-1/4 left-1/2 w-1.5 h-1.5 bg-white/50 rounded-full animate-ping animation-delay-2000"></div>
-          <div className="absolute top-1/2 left-1/3 w-1 h-1 bg-white/30 rounded-full animate-ping animation-delay-1000"></div>
-          <div className="absolute bottom-1/3 right-1/3 w-2 h-2 bg-white/20 rounded-full animate-ping animation-delay-2000"></div>
-        </div>
-      </div>
-      
-      {/* Lily's ORIGINAL background videos (that are actually uploaded to GitHub) */}
-      <video
-        autoPlay
-        loop
-        muted
-        playsInline
-        preload="metadata"
-        className="absolute inset-0 w-full h-full object-cover opacity-0"
-        style={{
-          filter: 'brightness(0.3) saturate(0.8)',
-        }}
-        onLoadedData={(e) => {
-          e.currentTarget.style.opacity = '1';
-        }}
-        onError={(e) => {
-          console.log('Primary background video failed, trying fallback...');
-          e.currentTarget.style.display = 'none';
-          // Try the white background version
-          const fallbackVideo = e.currentTarget.nextElementSibling as HTMLVideoElement;
-          if (fallbackVideo) {
-            fallbackVideo.style.display = 'block';
-            fallbackVideo.load();
-          }
-        }}
-      >
-        <source src="/assets/LM-BACKNATURE.mp4" type="video/mp4" />
-      </video>
-      
-      {/* Fallback ORIGINAL background video */}
-      <video
-        autoPlay
-        loop
-        muted
-        playsInline
-        preload="none"
-        className="absolute inset-0 w-full h-full object-cover opacity-0"
-        style={{
-          filter: 'brightness(0.4) saturate(0.8)',
-          display: 'none'
-        }}
-        onLoadedData={(e) => {
-          e.currentTarget.style.opacity = '0.8';
-        }}
-        onError={(e) => {
-          console.log('Fallback background video also failed, using gradient');
-          e.currentTarget.style.display = 'none';
-        }}
-      >
-        <source src="/assets/LM-BACKWHITE.mp4" type="video/mp4" />
-      </video>
-      
-      {/* Gradient Overlay for Apple-style depth */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/60"></div>
-      
-      {/* Subtle texture overlay */}
-      <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent"></div>
-    </div>
-  );
-
   return (
-    <div className="bg-white">
-      <Hero />
-
-      {/* Classes Preview with Lily's Background Videos */}    
-      <motion.section
-        initial="hidden" 
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.1 }}
-        variants={fadeInUp}
-        className="relative py-20 px-6 overflow-hidden"
-      >
-        <BackgroundVideo />
-
-        <div className="relative z-10 max-w-6xl mx-auto">
-          <motion.h2
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.1 }}
-            variants={fadeInUp}
-            className="text-4xl md:text-5xl font-bold text-center mb-16 text-white drop-shadow-2xl"
-          >
-            Movement Classes
-          </motion.h2>
-          
-          <motion.div
-            variants={staggerContainer}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.1 }}
-            className="grid md:grid-cols-3 gap-8"
-          >
-            {[
-              {
-                title: "Contemporary Flow",
-                description: "Fluid movements that connect mind, body, and spirit",
-                video: "/assets/Lily_dancing1.mp4"
-              },
-              {
-                title: "Mindful Movement", 
-                description: "Gentle practices focused on awareness and presence",
-                video: "/assets/Lily_dancing2.mp4"
-              },
-              {
-                title: "Expressive Dance",
-                description: "Freedom of expression through creative movement",
-                video: "/assets/LM_recap1.mp4"
-              }
-            ].map((classItem, index) => (
-              <motion.div
-                key={classItem.title}
-                variants={staggerItem}
-                style={{
-                  background: 'rgba(255, 255, 255, 0.08)',
-                  backdropFilter: 'blur(20px)',
-                  WebkitBackdropFilter: 'blur(20px)',
-                  border: '1px solid rgba(255, 255, 255, 0.2)',
-                  boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
-                }}
-                className="rounded-2xl overflow-hidden hover:shadow-3xl transition-all duration-300 transform hover:scale-[1.02] group hover:bg-white/12"
-              >
-                <div className="relative overflow-hidden">
-                  {/* Video container TRUE 9:16 vertical format - optimized for Lily's videos */}
-                  <div className="relative w-full overflow-hidden bg-gray-900/20 backdrop-blur-sm" style={{ aspectRatio: '9/16', maxHeight: '400px' }}>
-                    <video
-                      src={classItem.video}
-                      className="w-full h-full object-cover cursor-pointer transition-all duration-500 group-hover:scale-105"
-                      muted
-                      loop
-                      playsInline
-                      preload="metadata"
-                      onLoadedData={(e) => {
-                        e.currentTarget.currentTime = 0.1;
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.playbackRate = 1;
-                        e.currentTarget.play();
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.playbackRate = 0.3;
-                        e.currentTarget.play();
-                      }}
-                      onClick={() => setVideoModal(classItem.video)}
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        aspectRatio: '9/16',
-                        objectFit: 'cover',
-                        objectPosition: 'top' // Show the top part of Lily's videos
-                      }}
-                    />
-                    
-                    {/* Gradient overlay for better text readability */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/30 group-hover:from-black/30 transition-all duration-300" />
-                    
-                    {/* Play indicator that appears on hover */}
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
-                      <div 
-                        style={{
-                          background: 'rgba(255, 255, 255, 0.15)',
-                          backdropFilter: 'blur(10px)',
-                          WebkitBackdropFilter: 'blur(10px)',
-                          border: '1px solid rgba(255, 255, 255, 0.3)'
-                        }}
-                        className="rounded-full p-4 transform scale-75 group-hover:scale-100 transition-transform duration-300"
-                      >
-                        <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M8 5v14l11-7z"/>
-                        </svg>
-                      </div>
-                    </div>
-                    
-                    {/* Sample badge with glass effect */}
-                    <div 
-                      style={{
-                        background: 'rgba(0, 0, 0, 0.4)',
-                        backdropFilter: 'blur(10px)',
-                        WebkitBackdropFilter: 'blur(10px)',
-                        border: '1px solid rgba(255, 255, 255, 0.3)'
-                      }}
-                      className="absolute top-3 left-3 text-white text-xs px-3 py-1.5 rounded-full font-medium"
-                    >
-                      Preview
-                    </div>
-                    
-                    {/* Duration indicator with glass effect */}
-                    <div 
-                      style={{
-                        background: 'rgba(0, 0, 0, 0.4)',
-                        backdropFilter: 'blur(10px)',
-                        WebkitBackdropFilter: 'blur(10px)',
-                        border: '1px solid rgba(255, 255, 255, 0.3)'
-                      }}
-                      className="absolute bottom-3 right-3 text-white text-xs px-2 py-1 rounded font-medium"
-                    >
-                      0:30
-                    </div>
-                  </div>
-                </div>
-                
-                <div 
-                  style={{
-                    background: 'rgba(255, 255, 255, 0.05)',
-                    backdropFilter: 'blur(20px)',
-                    WebkitBackdropFilter: 'blur(20px)'
-                  }}
-                  className="p-6"
-                >
-                  <h3 className="text-xl font-bold mb-3 text-white group-hover:text-white/90 transition-colors duration-200 drop-shadow-lg">
-                    {classItem.title}
-                  </h3>
-                  <p className="text-white/80 mb-4 text-sm leading-relaxed drop-shadow">
-                    {classItem.description}
-                  </p>
-                  <button
-                    onClick={() => setVideoModal(classItem.video)}
-                    className="text-white font-semibold hover:text-white/80 transition-colors duration-200 text-sm flex items-center space-x-2 group/button drop-shadow"
-                  >
-                    <span>Watch Full Preview</span>
-                    <svg className="w-4 h-4 transform group-hover/button:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                    </svg>
-                  </button>
-                  
-                  {/* Membership CTA with enhanced glass effect */}
-                  <div className="mt-4 pt-4" style={{ borderTop: '1px solid rgba(255, 255, 255, 0.2)' }}>
-                    <p className="text-xs text-white/60 mb-2 drop-shadow">
-                      Full class available with membership
-                    </p>
-                    <Link
-                      href="/join"
-                      style={{
-                        background: 'rgba(255, 255, 255, 0.12)',
-                        backdropFilter: 'blur(10px)',
-                        WebkitBackdropFilter: 'blur(10px)',
-                        border: '1px solid rgba(255, 255, 255, 0.3)'
-                      }}
-                      className="inline-block text-white text-xs px-4 py-2 rounded-lg font-medium hover:bg-white/20 transition-all duration-200"
-                    >
-                      Join Now
-                    </Link>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-          
-          {/* Membership CTA */}
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.1 }}
-            variants={fadeInUp}
-            className="mt-16 text-center"
-          >
-            <div 
-              style={{
-                background: 'rgba(255, 255, 255, 0.1)',
-                backdropFilter: 'blur(25px)',
-                WebkitBackdropFilter: 'blur(25px)',
-                border: '1px solid rgba(255, 255, 255, 0.25)',
-                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
-              }}
-              className="rounded-3xl p-8 max-w-2xl mx-auto transition-all duration-300 hover:bg-white/15"
-            >
-              <h3 className="text-2xl font-bold text-white mb-4 drop-shadow-xl">
-                Ready for the Full Experience?
-              </h3>
-              <p className="text-white/90 mb-6 leading-relaxed drop-shadow-lg">
-                These are just previews of our movement classes. Join our membership to access full-length sessions, 
-                exclusive content, and connect with our community of mindful movers.
-              </p>
-              <Link
-                href="/join"
-                style={{
-                  background: 'rgba(255, 255, 255, 0.15)',
-                  backdropFilter: 'blur(15px)',
-                  WebkitBackdropFilter: 'blur(15px)',
-                  border: '1px solid rgba(255, 255, 255, 0.4)',
-                  boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
-                }}
-                className="text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white/25 transition-all duration-300 transform hover:scale-105 inline-block drop-shadow-xl"
-              >
-                Become a Member
-              </Link>
-            </div>
-          </motion.div>
-        </div>
-      </motion.section>
-
-      {/* Testimonials using Lily's testimonial videos */}
-      <motion.section
-        initial="hidden"
-        whileInView="visible" 
-        viewport={{ once: true, amount: 0.1 }}
-        variants={fadeInUp}
-        className="py-20 px-6 bg-white"
-      >
+    <div className="bg-lmBg">
+      {/* Hero Logo - Big logo displayed once */}
+      <section className="pt-10 pb-8 px-6">
         <div className="max-w-6xl mx-auto">
-          <motion.h2
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.1 }}
-            variants={fadeInUp}
-            className="text-4xl md:text-5xl font-bold text-center mb-16 text-gray-900"
-          >
-            What Students Say
-          </motion.h2>
-          
-          <motion.div
-            variants={staggerContainer}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.1 }}
-            className="grid md:grid-cols-2 gap-8"
-          >
-            {[
-              {
-                video: "/assets/testimonio 1.mp4",
-                name: "Sarah M.",
-                title: "Student since 2022"
-              },
-              {
-                video: "/assets/testimonio 2.mp4", 
-                name: "Maria L.",
-                title: "Student since 2021"
-              }
-            ].map((testimonial, index) => (
-              <motion.div
-                key={testimonial.name}
-                variants={staggerItem}
-                className="bg-gray-50 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-200 group"
-              >
-                {/* Testimonial video with TRUE 9:16 format and controlled size */}
-                <div className="relative overflow-hidden bg-gray-900" style={{ aspectRatio: '9/16', maxHeight: '350px' }}>
-                  <video
-                    src={testimonial.video}
-                    className="w-full h-full object-cover cursor-pointer transition-all duration-300 group-hover:scale-105"
-                    muted
-                    loop
-                    playsInline
-                    preload="metadata"
-                    onLoadedData={(e) => {
-                      e.currentTarget.currentTime = 0.1;
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.playbackRate = 1;
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.playbackRate = 0.4;
-                    }}
-                    onClick={() => setVideoModal(testimonial.video)}
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      aspectRatio: '9/16',
-                      objectFit: 'cover',
-                      objectPosition: 'top' // Show the top part of testimonial videos
-                    }}
-                  />
-                  
-                  {/* Play overlay */}
-                  <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all duration-300 flex items-center justify-center">
-                    <div className="bg-white/20 backdrop-blur-sm rounded-full p-3 opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300">
-                      <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M8 5v14l11-7z"/>
-                      </svg>
-                    </div>
-                  </div>
-                  
-                  {/* Testimonial badge */}
-                  <div className="absolute top-3 left-3 bg-black/70 backdrop-blur-sm text-white text-xs px-3 py-1.5 rounded-full font-medium border border-white/20">
-                    Testimonial
-                  </div>
-                </div>
-                
-                <div className="p-6">
-                  <h3 className="font-bold text-gray-900 text-lg">{testimonial.name}</h3>
-                  <p className="text-gray-600 text-sm">{testimonial.title}</p>
-                  <button
-                    onClick={() => setVideoModal(testimonial.video)}
-                    className="mt-3 text-gray-900 font-medium hover:text-gray-700 transition-colors duration-200 text-sm flex items-center space-x-2"
-                  >
-                    <span>Watch Story</span>
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h1m4 0h1m-6-8h8a2 2 0 012 2v8a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2z" />
-                    </svg>
-                  </button>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </motion.section>
-
-      {/* Meet Lily Section - using her story video */}
-      <motion.section
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.1 }}
-        variants={fadeInUp}
-        className="py-20 px-6 bg-gray-50"
-      >
-        <div className="max-w-6xl mx-auto">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <motion.div
-              variants={staggerContainer}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.1 }}
-            >
-              <motion.h2
-                variants={staggerItem}
-                className="text-4xl md:text-5xl font-bold mb-6 text-gray-900"
-              >
-                Meet Lily
-              </motion.h2>
-              <motion.p
-                variants={staggerItem}
-                className="text-lg text-gray-700 mb-6 leading-relaxed"
-              >
-                With over a decade of experience in dance and movement therapy, 
-                Lily has helped thousands discover their inner strength through the power of movement.
-              </motion.p>
-              <motion.p
-                variants={staggerItem}
-                className="text-lg text-gray-700 mb-8 leading-relaxed"
-              >
-                Her unique approach combines contemporary dance, mindfulness, and personal growth 
-                to create transformative experiences for students of all levels.
-              </motion.p>
-              <motion.button
-                variants={staggerItem}
-                onClick={() => setVideoModal('/assets/howgotstarted.mp4')}
-                className="bg-gray-900 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-800 transition-all duration-200 transform hover:scale-105 shadow-lg"
-              >
-                Watch Her Story
-              </motion.button>
-            </motion.div>
-            <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.1 }}
-              variants={fadeInUp}
-              className="relative"
-            >
-              <img
-                src="/assets/Lily_BIO_picture.png"
-                alt="Lily"
-                className="w-full rounded-2xl shadow-2xl"
+          <div className="relative w-full h-[240px] sm:h-[300px] md:h-[380px] lg:h-[440px] flex items-center justify-center perspective-[1200px]">
+            <div className="relative w-full h-full transform-gpu transition-all duration-700 hover:scale-105 preserve-3d">
+              <Image
+                src="/assets/Lil Movements (LOGO).png"
+                alt="Lil Movements"
+                fill
+                className="object-contain scale-[1.08] md:scale-[1.12] drop-shadow-[0_8px_32px_rgba(0,0,0,0.12)] transition-all duration-700"
+                priority
+                sizes="(max-width: 768px) 100vw, (max-width: 1280px) 1280px, 1280px"
+                style={{
+                  filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.08)) drop-shadow(0 12px 40px rgba(0,0,0,0.06))'
+                }}
               />
-            </motion.div>
+            </div>
+          </div>
+          
+          {/* Extracted signature - rendered once below logo */}
+          <div className="mt-6 flex justify-center">
+            <img 
+              src="/assets/lil-signature.png" 
+              alt="" 
+              aria-hidden="true" 
+              className="w-[240px] sm:w-[280px] md:w-[320px] h-auto opacity-85 transition-all duration-500 hover:opacity-100 hover:scale-105"
+            />
           </div>
         </div>
-      </motion.section>
+      </section>
+
+      {/* Hero Text */}
+      <section className="pt-4 pb-16 px-6">
+        <div className="max-w-4xl mx-auto">
+          <FadeInSection>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif leading-tight text-lmInk text-center mb-10">
+              A gentle return to the body, guided by movement.
+            </h1>
+          </FadeInSection>
+
+          <FadeInSection delay={100}>
+            <p className="text-lg md:text-xl text-lmMuted leading-relaxed text-center max-w-3xl mx-auto">
+              A soulful blend of meditation, Qigong, intuitive dance, and yoga-inspired stretching.
+            </p>
+            <p className="text-lg md:text-xl text-lmMuted leading-relaxed text-center max-w-3xl mx-auto mt-4">
+              Guided by Lily Hahn Shining, Lil Movements invites you to slow down, listen inward, and move with intention. Each class creates space to release what no longer serves and reconnect with your natural rhythm.
+            </p>
+            <p className="text-lg md:text-xl text-lmMuted leading-relaxed text-center max-w-3xl mx-auto mt-4">
+              Presence matters more than performance. Through <em className="italic">small, intentional movements</em>, the practice opens pathways to clarity, grounding, and connection.
+            </p>
+          </FadeInSection>
+
+          <FadeInSection delay={150}>
+            <div className="mt-10 flex justify-center">
+              <Link 
+                href="/free-class"
+                className="px-8 py-3 border-2 border-lmInk/20 text-lmInk rounded-full hover:border-lmInk/40 hover:bg-lmInk/5 transition-all duration-300 text-lg font-medium"
+              >
+                Free Class
+              </Link>
+            </div>
+          </FadeInSection>
+        </div>
+      </section>
+
+      {/* Drone Shot Video - Looping Background */}
+      <section className="pb-20 px-6">
+        <div className="max-w-4xl mx-auto">
+          <FadeInSection delay={150}>
+            <div className="rounded-2xl overflow-hidden" style={{ aspectRatio: '16/9' }}>
+              <video
+                src="/assets/dronshot.mp4"
+                autoPlay
+                loop
+                muted
+                playsInline
+                preload="auto"
+                disablePictureInPicture
+                controlsList="nodownload noplaybackrate noremoteplayback"
+                aria-hidden="true"
+                className="w-full h-full object-cover videoLoopHero"
+              />
+            </div>
+          </FadeInSection>
+        </div>
+      </section>
+
+      {/* Classes Section */}
+      <section id="classes" className="py-20 px-6 bg-lmBg2">
+        <div className="max-w-4xl mx-auto">
+          <FadeInSection>
+            <h2 className="text-3xl md:text-4xl font-serif text-lmInk mb-12">
+              Classes
+            </h2>
+          </FadeInSection>
+          
+          <div className="space-y-12">
+            <FadeInSection delay={100}>
+              <div className="space-y-3">
+                <h3 className="text-2xl font-semibold text-lmInk">Group Classes</h3>
+                <p className="text-lg text-lmMuted leading-relaxed">
+                  Join weekly sessions at select locations in Santa Barbara. 
+                  Each class blends meditation, Qigong, intuitive dance, and yoga inspired stretching 
+                  to create a practice that grounds the body and awakens your inner rhythm.
+                </p>
+              </div>
+            </FadeInSection>
+            
+            <FadeInSection delay={150}>
+              <div className="lm-divider"></div>
+            </FadeInSection>
+            
+            <FadeInSection delay={200}>
+              <div className="space-y-3">
+                <h3 className="text-2xl font-semibold text-lmInk">Private Sessions</h3>
+                <p className="text-lg text-lmMuted leading-relaxed">
+                  One on one movement sessions tailored to your needs. 
+                  Work directly with Lillian to develop a personal practice that honors your body and supports your journey.
+                </p>
+              </div>
+            </FadeInSection>
+            
+            <FadeInSection delay={250}>
+              <div className="lm-divider"></div>
+            </FadeInSection>
+            
+            <FadeInSection delay={300}>
+              <div className="space-y-3">
+                <h3 className="text-2xl font-semibold text-lmInk">Workshops</h3>
+                <p className="text-lg text-lmMuted leading-relaxed">
+                  Special events and extended practices throughout the year. 
+                  Deepen your connection to movement through immersive experiences that blend mindfulness and embodied awareness.
+                </p>
+              </div>
+            </FadeInSection>
+          </div>
+        </div>
+      </section>
 
       {/* Contact Section */}
-      <motion.section
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.1 }}
-        variants={fadeInUp}
-        className="py-20 px-6 bg-gray-900 text-white"
-      >
-        <div className="max-w-4xl mx-auto">
-          <motion.h2
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.1 }}
-            variants={fadeInUp}
-            className="text-4xl md:text-5xl font-bold text-center mb-16"
-          >
-            Start Your Journey
-          </motion.h2>
+      <section id="contact" className="py-20 px-6">
+        <div className="max-w-3xl mx-auto">
+          <FadeInSection>
+            <h2 className="text-3xl md:text-4xl font-serif text-lmInk mb-12 text-center">
+              Get in Touch
+            </h2>
+          </FadeInSection>
           
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.1 }}
-            variants={fadeInUp}
-            className="max-w-2xl mx-auto"
-          >
-            <ContactForm />
-          </motion.div>
+          <FadeInSection delay={100}>
+            <ContactFormMinimal />
+          </FadeInSection>
         </div>
-      </motion.section>
-
-      {/* Video Modal */}
-      {videoModal && (
-        <VideoModal
-          isOpen={!!videoModal}
-          onClose={() => setVideoModal(null)}
-          src={videoModal}
-        />
-      )}
+      </section>
     </div>
+  );
+}
+
+// Minimal Contact Form Component
+function ContactFormMinimal() {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    message: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<{
+    type: 'success' | 'error' | null;
+    message: string;
+  }>({ type: null, message: '' });
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitStatus({ type: null, message: '' });
+
+    try {
+      const response = await fetch('https://formspree.io/f/mgowplke', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          message: formData.message
+        }),
+      });
+
+      if (response.ok) {
+        setSubmitStatus({
+          type: 'success',
+          message: 'Sent ✅'
+        });
+        setFormData({
+          name: '',
+          email: '',
+          message: ''
+        });
+      } else {
+        setSubmitStatus({
+          type: 'error',
+          message: 'Something went wrong. Try again.'
+        });
+      }
+    } catch (error) {
+      setSubmitStatus({
+        type: 'error',
+        message: 'Something went wrong. Try again.'
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <div>
+        <label htmlFor="name" className="block text-sm font-semibold text-lmInk mb-2">
+          Name
+        </label>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          value={formData.name}
+          onChange={handleInputChange}
+          required
+          className="w-full px-4 py-3 bg-white border border-lmBorder rounded-lg text-lmInk placeholder-lmMuted focus:outline-none focus:ring-2 focus:ring-lmAccent focus:border-transparent transition-all duration-200"
+          placeholder="Your name"
+        />
+      </div>
+
+      <div>
+        <label htmlFor="email" className="block text-sm font-semibold text-lmInk mb-2">
+          Email
+        </label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          value={formData.email}
+          onChange={handleInputChange}
+          required
+          className="w-full px-4 py-3 bg-white border border-lmBorder rounded-lg text-lmInk placeholder-lmMuted focus:outline-none focus:ring-2 focus:ring-lmAccent focus:border-transparent transition-all duration-200"
+          placeholder="your@email.com"
+        />
+      </div>
+
+      <div>
+        <label htmlFor="message" className="block text-sm font-semibold text-lmInk mb-2">
+          Message
+        </label>
+        <textarea
+          id="message"
+          name="message"
+          value={formData.message}
+          onChange={handleInputChange}
+          required
+          rows={5}
+          className="w-full px-4 py-3 bg-white border border-lmBorder rounded-lg text-lmInk placeholder-lmMuted focus:outline-none focus:ring-2 focus:ring-lmAccent focus:border-transparent transition-all duration-200 resize-none"
+          placeholder="Tell me about your interest in movement classes"
+        />
+      </div>
+
+      {submitStatus.type && (
+        <div
+          className={`p-4 rounded-lg ${
+            submitStatus.type === 'success'
+              ? 'bg-green-100 border border-green-300 text-green-800'
+              : 'bg-red-100 border border-red-300 text-red-800'
+          }`}
+        >
+          {submitStatus.message}
+        </div>
+      )}
+
+      <div className="flex justify-center">
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="bg-lmInk text-white px-8 py-3 rounded-lg font-semibold hover:bg-opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+        >
+          {isSubmitting ? 'Sending' : 'Send Message'}
+        </button>
+      </div>
+    </form>
   );
 }

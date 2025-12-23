@@ -116,12 +116,12 @@ export default function HealthGuidelinesPage() {
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-sm font-semibold">Contact</h2>
+        <h2 className="text-sm font-semibold">10. Contact</h2>
         <p>
-          Health and safety questions or concerns? Contact{" "}
-          <a href="mailto:safety@lilmovements.com" className="underline underline-offset-2">
-            safety@lilmovements.com
-          </a>
+          Questions? Email us at{" "}
+          <a href="mailto:info.lilmovements@gmail.com" className="underline underline-offset-2">
+            info.lilmovements@gmail.com
+          </a>.
         </p>
       </section>
     </main>

@@ -33,8 +33,8 @@ export default function DMCAPage() {
         <h2 className="text-sm font-semibold">3. Designated Agent</h2>
         <p>
           Send DMCA notices to our designated agent:{" "}
-          <a href="mailto:dmca@lilmovements.com" className="underline underline-offset-2">
-            dmca@lilmovements.com
+          <a href="mailto:info.lilmovements@gmail.com" className="underline underline-offset-2">
+            info.lilmovements@gmail.com
           </a>
         </p>
       </section>

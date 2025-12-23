@@ -20,7 +20,7 @@ export async function POST(request: Request) {
     // Validate required fields
     if (!name || !email || !message) {
       return new Response(JSON.stringify({ 
-        ok: false, 
+        success: false, 
         error: "Name, email, and message are required." 
       }), { 
         status: 400,
@@ -32,7 +32,7 @@ export async function POST(request: Request) {
     if (!emailConfig.host || !emailConfig.auth.user || !emailConfig.auth.pass || !emailFrom || !emailTo) {
       console.error("Missing email configuration in environment variables");
       return new Response(JSON.stringify({ 
-        ok: false, 
+        success: false, 
         error: "Email service is temporarily unavailable. Please try again later." 
       }), { 
         status: 500,
@@ -61,7 +61,7 @@ export async function POST(request: Request) {
     await transporter.sendMail(mailOptions);
 
     return new Response(JSON.stringify({ 
-      ok: true, 
+      success: true, 
       message: "Email sent successfully" 
     }), { 
       status: 200,
@@ -71,7 +71,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error("Error sending email:", error);
     return new Response(JSON.stringify({ 
-      ok: false, 
+      success: false, 
       error: "Failed to send email. Please try again later." 
     }), { 
       status: 500,

@@ -2,13 +2,58 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Lil Movements Design Tokens - Calm & Minimal */
+:root {
+  --lm-bg: #F4E7E3;        /* blush/cream base */
+  --lm-bg-2: #F7EFEA;      /* soft alt */
+  --lm-ink: #111111;       /* black-ish text */
+  --lm-muted: rgba(17,17,17,0.70);
+  --lm-accent: #C98F8A;    /* subtle accent */
+  --lm-border: rgba(17,17,17,0.12);
+}
+
 /* minimal base to avoid FOUC */
 html, body, #__next { height: 100%; }
 
-/* Clean white background - removing any yellow/amber tint */
+/* Calm blush/cream background with black text */
 body {
-  background: #ffffff;
+  background: var(--lm-bg);
+  color: var(--lm-ink);
   min-height: 100vh;
+}
+
+/* Serif font for headlines */
+.font-serif {
+  font-family: var(--font-playfair), serif;
+}
+
+/* Signature-like text style - handwritten feel */
+.signatureText {
+  font-family: var(--font-signature), cursive;
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: -0.015em;
+  transform: rotate(-1.5deg);
+  color: rgba(17, 17, 17, 0.55);
+  line-height: 1;
+  display: inline-block;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Typography utilities for strong typography (bold/italic) */
+.lm-quote { 
+  font-style: italic; 
+  font-weight: 500; 
+  color: var(--lm-ink); 
+}
+
+.lm-muted { 
+  color: var(--lm-muted); 
+}
+
+.lm-divider { 
+  border-top: 1px solid var(--lm-border); 
 }
 
 /* Subtle floating animation */
@@ -88,4 +133,10 @@ body {
 
 .animate-pulse-subtle {
   animation: pulse-subtle 2s ease-in-out infinite;
+}
+
+/* Video loop hero - non-interactive background video */
+.videoLoopHero {
+  pointer-events: none;
+  user-select: none;
 }

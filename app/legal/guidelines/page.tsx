@@ -67,10 +67,10 @@ export default function CommunityGuidelinesPage() {
       <section className="space-y-3">
         <h2 className="text-sm font-semibold">Contact</h2>
         <p>
-          Report issues or questions about community guidelines to{" "}
-          <a href="mailto:community@lilmovements.com" className="underline underline-offset-2">
-            community@lilmovements.com
-          </a>
+          Questions or concerns? Email us at{" "}
+          <a href="mailto:info.lilmovements@gmail.com" className="underline underline-offset-2">
+            info.lilmovements@gmail.com
+          </a>.
         </p>
       </section>
     </main>

@@ -1,1 +1,0 @@
-export const PRIMARY_INSTRUCTOR = "Lillian Hahn Shining";
