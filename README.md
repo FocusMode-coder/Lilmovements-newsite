@@ -46,6 +46,7 @@ Set these environment variables in your Render service:
 - `DATABASE_URL` - Your PostgreSQL connection string from Render
 - `NEXTAUTH_SECRET` - A secure random string
 - `NEXTAUTH_URL` - Your production domain (e.g., `https://your-app.onrender.com`)
+- `NEXT_PUBLIC_YOUTUBE_LONG_URL` - (Optional) Full YouTube URL for featured video embed
 
 ### Build Command
 **Important**: Use this build command in Render to ensure Prisma migrations run before building:
@@ -64,6 +65,15 @@ This command will:
 npm start
 ```
 
+### Keeping Render Free Tier Awake
+To prevent cold starts on Render's free tier, use an external uptime monitoring service to ping your health endpoint:
+
+1. Set up **UptimeRobot** or **BetterStack** (or similar service)
+2. Configure it to ping: `https://your-app.onrender.com/health` every 5 minutes
+3. The `/health` endpoint returns a fast JSON response without hitting the database
+
+**Note**: Do not implement self-pinging inside the app to avoid infinite loops and unnecessary resource usage.
+
 ## Database Migrations
 
 - **Development**: `npm run migrate:dev` - Creates new migration files and applies them
@@ -77,3 +87,10 @@ npm start
 - `/lib` - Utility functions and configurations
 - `/prisma` - Database schema and migrations
 - `/public` - Static assets
+
+## Key Routes
+
+- `/` - Homepage with drone video preview and optional YouTube embed
+- `/health` - Health check endpoint for uptime monitoring
+- `/drone` - Dedicated page for drone video player
+- `/videos/drone.mp4` - Direct link to drone video file

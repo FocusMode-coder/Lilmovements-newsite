@@ -5,7 +5,35 @@ import Image from 'next/image';
 import Link from 'next/link';
 import FadeInSection from '@/components/FadeInSection';
 
+const YOUTUBE_LONG_URL = process.env.NEXT_PUBLIC_YOUTUBE_LONG_URL || '';
+
+function convertYouTubeToEmbed(url: string): string {
+  if (!url) return '';
+  
+  // Handle youtu.be links
+  if (url.includes('youtu.be/')) {
+    const videoId = url.split('youtu.be/')[1]?.split('?')[0];
+    return `https://www.youtube.com/embed/${videoId}`;
+  }
+  
+  // Handle youtube.com/watch?v= links
+  if (url.includes('youtube.com/watch?v=')) {
+    const urlObj = new URL(url);
+    const videoId = urlObj.searchParams.get('v');
+    return `https://www.youtube.com/embed/${videoId}`;
+  }
+  
+  // Already an embed URL
+  if (url.includes('youtube.com/embed/')) {
+    return url;
+  }
+  
+  return url;
+}
+
 export default function Home() {
+  const embedUrl = convertYouTubeToEmbed(YOUTUBE_LONG_URL);
+
   return (
     <div className="bg-lmBg">
       {/* Hero Logo - Big logo displayed once */}
@@ -73,27 +101,70 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Drone Shot Video - Looping Background */}
+      {/* Drone Preview Section - VISIBLE with controls */}
       <section className="pb-20 px-6">
         <div className="max-w-4xl mx-auto">
           <FadeInSection delay={150}>
-            <div className="rounded-2xl overflow-hidden" style={{ aspectRatio: '16/9' }}>
+            <h2 className="text-3xl md:text-4xl font-serif text-lmInk mb-6 text-center">
+              Drone Preview
+            </h2>
+            <div className="mb-4">
               <video
-                src="/assets/dronshot.mp4"
-                autoPlay
-                loop
-                muted
+                src="/videos/drone.mp4"
+                controls
                 playsInline
-                preload="auto"
-                disablePictureInPicture
-                controlsList="nodownload noplaybackrate noremoteplayback"
-                aria-hidden="true"
-                className="w-full h-full object-cover videoLoopHero"
-              />
+                preload="metadata"
+                className="w-full max-w-[900px] mx-auto rounded-2xl shadow-lg"
+                style={{ maxWidth: '900px' }}
+              >
+                Your browser does not support the video tag.
+              </video>
+            </div>
+            <div className="text-center text-sm text-lmMuted mt-4">
+              <p>
+                If the player doesn&apos;t load, 
+                <a 
+                  href="/videos/drone.mp4" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-lmInk hover:underline ml-1"
+                >
+                  open the file directly
+                </a>
+                {' · '}
+                <Link 
+                  href="/drone"
+                  className="text-lmInk hover:underline"
+                >
+                  View full page
+                </Link>
+              </p>
             </div>
           </FadeInSection>
         </div>
       </section>
+
+      {/* YouTube Long-form Section (if configured) */}
+      {embedUrl && (
+        <section className="pb-20 px-6">
+          <div className="max-w-4xl mx-auto">
+            <FadeInSection delay={200}>
+              <h2 className="text-3xl md:text-4xl font-serif text-lmInk mb-6 text-center">
+                Featured Video
+              </h2>
+              <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
+                <iframe
+                  src={embedUrl}
+                  title="Featured YouTube Video"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="absolute top-0 left-0 w-full h-full rounded-2xl shadow-lg"
+                />
+              </div>
+            </FadeInSection>
+          </div>
+        </section>
+      )}
 
       {/* Classes Section */}
       <section id="classes" className="py-20 px-6 bg-lmBg2">
