@@ -60,3 +60,6 @@ Thumbs.db
 public/assets/*.mp3
 public/assets/*.mp4
 
+# Exception: Allow specific videos needed for deployment
+!public/videos/drone.mp4
+
