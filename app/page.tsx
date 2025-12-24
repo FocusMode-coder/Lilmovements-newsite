@@ -101,44 +101,23 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Drone Preview Section - VISIBLE with controls */}
+      {/* Drone Video - Looping Background (NO controls, NO title) */}
       <section className="pb-20 px-6">
         <div className="max-w-4xl mx-auto">
           <FadeInSection delay={150}>
-            <h2 className="text-3xl md:text-4xl font-serif text-lmInk mb-6 text-center">
-              Drone Preview
-            </h2>
-            <div className="mb-4">
+            <div className="rounded-2xl overflow-hidden" style={{ aspectRatio: '16/9' }}>
               <video
                 src="/videos/drone.mp4"
-                controls
+                autoPlay
+                loop
+                muted
                 playsInline
-                preload="metadata"
-                className="w-full max-w-[900px] mx-auto rounded-2xl shadow-lg"
-                style={{ maxWidth: '900px' }}
-              >
-                Your browser does not support the video tag.
-              </video>
-            </div>
-            <div className="text-center text-sm text-lmMuted mt-4">
-              <p>
-                If the player doesn&apos;t load, 
-                <a 
-                  href="/videos/drone.mp4" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-lmInk hover:underline ml-1"
-                >
-                  open the file directly
-                </a>
-                {' · '}
-                <Link 
-                  href="/drone"
-                  className="text-lmInk hover:underline"
-                >
-                  View full page
-                </Link>
-              </p>
+                preload="auto"
+                disablePictureInPicture
+                controlsList="nodownload noplaybackrate noremoteplayback"
+                aria-hidden="true"
+                className="w-full h-full object-cover videoLoopHero"
+              />
             </div>
           </FadeInSection>
         </div>
