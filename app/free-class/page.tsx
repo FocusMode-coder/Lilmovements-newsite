@@ -24,11 +24,13 @@ export default function FreeClassPage() {
           <div className="w-full max-w-4xl mx-auto">
             <div className="relative w-full rounded-lg overflow-hidden shadow-2xl" style={{ paddingBottom: '56.25%' }}>
               <iframe
-                src="https://www.youtube.com/embed/CPegMkl79EU?modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&cc_load_policy=0&fs=1&color=white"
+                src="https://www.youtube.com/embed/CPegMkl79EU?modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&cc_load_policy=0&fs=1&color=white&controls=1&disablekb=1&playsinline=1&widget_referrer=https%3A%2F%2Flilmovements.onrender.com"
                 title="Free Full Class - Lil Movements"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowFullScreen
                 className="absolute top-0 left-0 w-full h-full"
+                style={{ border: 'none' }}
+                referrerPolicy="strict-origin-when-cross-origin"
               />
             </div>
           </div>
