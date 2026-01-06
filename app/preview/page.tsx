@@ -17,7 +17,7 @@ export default function VideoPreviewPage() {
     {
       id: 'fullclass',
       title: 'Full Class',
-      src: 'https://www.youtube.com/embed/CPegMkl79EU',
+      src: 'https://www.youtube.com/embed/CPegMkl79EU?modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&cc_load_policy=0&fs=1&color=white',
       description: 'Complete class recording (YouTube Unlisted)',
       type: 'youtube'
     },
