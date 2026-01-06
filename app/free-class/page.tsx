@@ -22,14 +22,15 @@ export default function FreeClassPage() {
 
         <FadeInSection delay={100}>
           <div className="w-full max-w-4xl mx-auto">
-            <video
-              className="w-full rounded-lg shadow-2xl"
-              controls
-              preload="metadata"
-            >
-              <source src="/assets/fullclassLilmovementsCompressed.mp4" type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
+            <div className="relative w-full rounded-lg overflow-hidden shadow-2xl" style={{ paddingBottom: '56.25%' }}>
+              <iframe
+                src="https://www.youtube.com/embed/CPegMkl79EU"
+                title="Free Full Class - Lil Movements"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="absolute top-0 left-0 w-full h-full"
+              />
+            </div>
           </div>
         </FadeInSection>
 

@@ -11,25 +11,29 @@ export default function VideoPreviewPage() {
       id: 'drone',
       title: 'Drone Shot',
       src: '/assets/dronshot.mp4',
-      description: 'Aerial view drone footage'
+      description: 'Aerial view drone footage',
+      type: 'video'
     },
     {
       id: 'fullclass',
       title: 'Full Class',
-      src: '/assets/fullclassLilmovementsCompressed.mp4',
-      description: 'Complete class recording'
+      src: 'https://www.youtube.com/embed/CPegMkl79EU',
+      description: 'Complete class recording (YouTube Unlisted)',
+      type: 'youtube'
     },
     {
       id: 'howgotstarted',
       title: 'How I Got Started',
       src: '/assets/howgotstarted.mp4',
-      description: 'Origin story'
+      description: 'Origin story',
+      type: 'video'
     },
     {
       id: 'interview',
       title: 'Lily Interview',
       src: '/assets/Lilinteview.mp4',
-      description: 'Interview with Lily'
+      description: 'Interview with Lily',
+      type: 'video'
     }
   ];
 
@@ -61,17 +65,27 @@ export default function VideoPreviewPage() {
             >
               {/* Video Player */}
               <div className="relative bg-black" style={{ aspectRatio: '16/9' }}>
-                <video
-                  controls
-                  preload="metadata"
-                  playsInline
-                  className="w-full h-full"
-                  onPlay={() => setIsPlaying(true)}
-                  onPause={() => setIsPlaying(false)}
-                >
-                  <source src={video.src} type="video/mp4" />
-                  Your browser does not support the video tag.
-                </video>
+                {video.type === 'youtube' ? (
+                  <iframe
+                    src={video.src}
+                    title={video.title}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    className="w-full h-full"
+                  />
+                ) : (
+                  <video
+                    controls
+                    preload="metadata"
+                    playsInline
+                    className="w-full h-full"
+                    onPlay={() => setIsPlaying(true)}
+                    onPause={() => setIsPlaying(false)}
+                  >
+                    <source src={video.src} type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                )}
               </div>
 
               {/* Video Info */}
@@ -83,7 +97,7 @@ export default function VideoPreviewPage() {
                   {video.description}
                 </p>
                 <div className="flex items-center gap-4 text-sm text-lmMuted">
-                  <span className="font-mono bg-lmBg2 px-3 py-1 rounded">
+                  <span className="font-mono bg-lmBg2 px-3 py-1 rounded text-xs break-all">
                     {video.src}
                   </span>
                 </div>
@@ -110,6 +124,14 @@ export default function VideoPreviewPage() {
             <div className="flex items-start gap-3">
               <span className="text-green-600 font-bold text-xl">✓</span>
               <div>
+                <p className="font-semibold text-lmInk">Full Class Video</p>
+                <p className="text-lmMuted">Now hosted on YouTube (Unlisted) for reliable streaming on Render</p>
+              </div>
+            </div>
+            
+            <div className="flex items-start gap-3">
+              <span className="text-green-600 font-bold text-xl">✓</span>
+              <div>
                 <p className="font-semibold text-lmInk">Full Playback Controls</p>
                 <p className="text-lmMuted">This preview page provides complete video controls for testing</p>
               </div>
@@ -126,8 +148,8 @@ export default function VideoPreviewPage() {
 
           <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
             <p className="text-sm text-blue-900">
-              <strong>Note:</strong> Videos are served from <code className="bg-blue-100 px-2 py-1 rounded">/public/assets/</code> 
-              and are excluded from git tracking to keep repository size manageable.
+              <strong>Note:</strong> The full class video is now hosted on YouTube (Unlisted) to avoid file size limitations on Render. 
+              Other videos are served from <code className="bg-blue-100 px-2 py-1 rounded">/public/assets/</code>.
             </p>
           </div>
         </div>
