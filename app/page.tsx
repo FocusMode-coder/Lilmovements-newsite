@@ -54,16 +54,6 @@ export default function Home() {
               />
             </div>
           </div>
-          
-          {/* Extracted signature - rendered once below logo */}
-          <div className="mt-6 flex justify-center">
-            <img 
-              src="/assets/lil-signature.png" 
-              alt="" 
-              aria-hidden="true" 
-              className="w-[240px] sm:w-[280px] md:w-[320px] h-auto opacity-85 transition-all duration-500 hover:opacity-100 hover:scale-105"
-            />
-          </div>
         </div>
       </section>
 
