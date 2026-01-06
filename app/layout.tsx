@@ -8,6 +8,7 @@ import AuthProvider from "@/components/AuthProvider";
 import ScrollTexture from "@/components/ScrollTexture";
 import GoldenEdgeLines from "@/components/GoldenEdgeLines";
 import SiteHeader from "@/components/SiteHeader";
+import KeepAlive from "@/components/KeepAlive";
 
 const inter = Inter({ subsets: ["latin"] });
 const playfair = Playfair_Display({ 
@@ -40,6 +41,7 @@ export default function RootLayout({
           <SiteHeader />
           <ScrollTexture />
           <GoldenEdgeLines />
+          <KeepAlive />
           <main className="bg-lmBg">
             {children}
           </main>
