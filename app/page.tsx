@@ -82,9 +82,10 @@ export default function Home() {
             <div className="mt-10 flex justify-center">
               <Link 
                 href="/free-class"
-                className="px-8 py-3 border-2 border-lmInk/20 text-lmInk rounded-full hover:border-lmInk/40 hover:bg-lmInk/5 transition-all duration-300 text-lg font-medium"
+                className="relative px-8 py-3 border-2 border-lmInk/20 text-lmInk rounded-full hover:border-lmInk/40 hover:bg-lmInk/5 transition-all duration-300 text-lg font-medium animate-pulse-subtle hover:animate-none shadow-lg hover:shadow-xl"
               >
-                Free Class
+                <span className="relative z-10">Free Class</span>
+                <span className="absolute inset-0 rounded-full bg-lmAccent/10 animate-ping-slow"></span>
               </Link>
             </div>
           </FadeInSection>
